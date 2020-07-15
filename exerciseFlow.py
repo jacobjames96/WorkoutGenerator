@@ -1,6 +1,8 @@
 import gspread
 import generator
 import uploadWorkout
+import telegram_commands
+from datetime import datetime
 
 # Authorise & open the spreadsheet
 gc = gspread.oauth()
@@ -17,5 +19,13 @@ if __name__ == '__main__':
     print("Hello! Time for a workout!")
     workout, points = generator.generate_workout(points_target, exercise_weights)
     print("Here is your workout, worth {} points:".format(points))
-    print(generator.format_workout(workout))
+    workout_formatted = generator.format_workout(workout)
+    print(workout_formatted)
     uploadWorkout.upload_workout(spreadsheet.worksheet('workouts'), workout, points)
+
+    today = datetime.today().strftime('%d/%m/%Y')
+
+    telegram_message = today + '\n Archie did a workout worth {} points'.format(points) + ' consisting of: \n'
+
+    telegram_commands.telegram_bot_sendtext(telegram_message + workout_formatted)
+

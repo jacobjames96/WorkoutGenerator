@@ -1,16 +1,5 @@
-import gspread
 from datetime import date
 from gspread.exceptions import CellNotFound
-import generator
-
-gc = gspread.oauth()
-
-spreadsheet = gc.open('Workout Generator')
-exercises = spreadsheet.worksheet('weights').col_values(1)[1:]
-workouts = spreadsheet.worksheet('workouts')
-
-# Establish the current max dimensions of the workouts sheet
-max_row = len(workouts.col_values(1))
 
 
 def find_or_create_col(sheet, search_string):
@@ -30,6 +19,7 @@ def upload_workout(sheet, workout, points):
     row = len(sheet.col_values(1)) + 1
     today = date.today().strftime('%d/%m/%Y')
 
+    # TODO: Make this more concise, use one update statement for these two lines
     sheet.update_cell(row, 1, today)  # Add in today's date
     sheet.update_cell(row, 2, points)  # Add in the points total
 
@@ -37,8 +27,3 @@ def upload_workout(sheet, workout, points):
     for ex in workout:
         col = find_or_create_col(sheet, ex)
         sheet.update_cell(row, col, workout[ex][0])
-
-
-sample_workout, sample_points = generator.generate_workout(100, spreadsheet.worksheet('weights').get_all_values()[1:])
-
-upload_workout(workouts, sample_workout, sample_points)

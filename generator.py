@@ -38,7 +38,6 @@ def generate_workout(points_target, exercise_weights):
             exercise_points = reps * float(value)
 
         # Log the exercise and number of reps (updating the number of reps if we have already added it to the workout)
-        # TODO Better formatting of the output string to incorporate what type of exercise it is
         if name in workout:
             workout[name][0] += reps
         else:
@@ -47,7 +46,6 @@ def generate_workout(points_target, exercise_weights):
         points_total += exercise_points
         counter += 1
 
-    # TODO Output the workout to Google sheets? This could maybe be done elsewhere.
     return workout, int(points_total)
 
 
@@ -61,3 +59,4 @@ def format_workout(workout_dict):
             output += str(v[0]) + 's ' + k
         output += '\n'
     return output
+
