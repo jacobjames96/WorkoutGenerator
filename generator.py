@@ -1,19 +1,5 @@
-import gspread
 import random
 import math
-
-# Authorise & open the spreadsheet
-gc = gspread.oauth()
-spreadsheet = gc.open('Workout Generator')
-
-# Retrieve the current workout points target
-points_target = int(spreadsheet.worksheet('target').acell('B1').value)
-
-# Get exercises data as a list of lists, drop the first item because it is headers
-exercise_weights = spreadsheet.worksheet('weights').get_all_values()
-exercise_weights.pop(0)
-
-# Randomise the list of exercises (without specifying a seed to get a different shuffle every time)
 
 
 def generate_workout(points_target, exercise_weights):
@@ -28,7 +14,7 @@ def generate_workout(points_target, exercise_weights):
     # (by taking modulo num_exercises)
     counter = num_exercises
     while points_total < points_target:
-        #TODO: Randomise the exercise list every time to avoid bias towards the first exercise
+        # TODO: Randomise the exercise list every time to avoid bias towards the first exercise
 
         # Get the next exercise details, update the type of the number variables
         name, value, exercise_type, min_reps = exercise_weights[counter % num_exercises]
@@ -61,11 +47,17 @@ def generate_workout(points_target, exercise_weights):
         points_total += exercise_points
         counter += 1
 
-    #TODO Output the workout to Google sheets? This could maybe be done elsewhere.
-    return workout, points_total
+    # TODO Output the workout to Google sheets? This could maybe be done elsewhere.
+    return workout, int(points_total)
 
 
-for i in range(10):
-    workout, points = generate_workout(points_target, exercise_weights)
-    print(workout)
-    print(points)
+def format_workout(workout_dict):
+    output = ''
+    for count, (k, v) in enumerate(workout_dict.items(),1):
+        output += str(count) + '. '
+        if v[1] == 'Reps':
+            output += str(v[0]) + ' ' + k
+        else:
+            output += str(v[0]) + 's ' + k
+        output += '\n'
+    return output
