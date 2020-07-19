@@ -17,7 +17,7 @@ def generate_workout(points_target, exercise_weights):
         # TODO: Randomise the exercise list every time to avoid bias towards the first exercise
 
         # Get the next exercise details, update the type of the number variables
-        name, value, exercise_type, min_reps = exercise_weights[counter % num_exercises]
+        name, value, exercise_type, min_reps, category = exercise_weights[counter % num_exercises]
         value = float(value)
         min_reps = int(min_reps)
 
