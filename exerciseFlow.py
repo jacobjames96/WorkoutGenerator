@@ -58,6 +58,5 @@ if __name__ == '__main__':
 
         telegram_message = today + '\n Archie did a workout worth {} points'.format(points) + ' consisting of: \n'
 
-        #telegram_commands.telegram_bot_sendtext(telegram_message + workout_formatted, settings.telegram['dark_chat'])
-        telegram_commands.telegram_bot_sendtext(telegram_message + workout_formatted, settings.telegram['archie_chat'])
+        telegram_commands.send_message(telegram_message + workout_formatted, settings.telegram['archie_chat'])
 

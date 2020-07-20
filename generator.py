@@ -1,5 +1,19 @@
 import random
 import math
+import gspread
+
+
+def get_exercises():
+    gc = gspread.oauth()
+    spreadsheet = gc.open('Workout Generator')
+
+    # Retrieve the current workout points target
+    points_target = int(spreadsheet.worksheet('target').acell('B1').value)
+
+    # Get exercises data as a list of lists, drop the first item because it is headers
+    exercise_weights = spreadsheet.worksheet('weights').get_all_values()[1:]
+
+    return (points_target, exercise_weights)
 
 
 def generate_workout(points_target, exercise_weights):
