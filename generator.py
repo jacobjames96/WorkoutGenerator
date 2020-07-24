@@ -3,7 +3,7 @@ import math
 import gspread
 
 
-def get_exercises():
+def get_exercises(categories=None):
     gc = gspread.oauth()
     spreadsheet = gc.open('Workout Generator')
 
@@ -13,7 +13,22 @@ def get_exercises():
     # Get exercises data as a list of lists, drop the first item because it is headers
     exercise_weights = spreadsheet.worksheet('weights').get_all_values()[1:]
 
-    return (points_target, exercise_weights)
+    if categories:
+        # Select only exercises from the weights list where the 'category' is in the chosen category list
+        exercise_weights = [exercise for exercise in exercise_weights if exercise[4] in categories]
+
+    return points_target, exercise_weights
+
+
+def get_categories():
+    gc = gspread.oauth()
+    spreadsheet = gc.open('Workout Generator')
+
+    # Get exercises
+    exercise_weights = spreadsheet.worksheet('weights').get_all_values()[1:]
+    categories = set([exercise[4] for exercise in exercise_weights])
+
+    return categories
 
 
 def generate_workout(points_target, exercise_weights):
@@ -65,7 +80,7 @@ def generate_workout(points_target, exercise_weights):
 
 def format_workout(workout_dict):
     output = ''
-    for count, (k, v) in enumerate(workout_dict.items(),1):
+    for count, (k, v) in enumerate(workout_dict.items(), 1):
         output += str(count) + '. '
         if v[1] == 'Reps':
             output += str(v[0]) + ' ' + k

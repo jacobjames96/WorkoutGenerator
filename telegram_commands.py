@@ -40,10 +40,18 @@ def get_last_update_id(updates):
     return max(update_ids)
 
 
-def send_message(text, chat_id):
+def send_message(text, chat_id, reply_markup=None):
     # Sends a message from the exercisebot to the specified chat ID
-    url = URL + 'sendMessage?text={}&chat_id={}'.format(text, chat_id)
+    url = URL + 'sendMessage?text={}&chat_id={}&parse_mode=Markdown'.format(text, chat_id)
+    if reply_markup:
+        url += "&reply_markup={}".format(reply_markup)
     get_url(url)
+
+
+def build_keyboard(items):
+    keyboard = [[item] for item in items]
+    reply_markup = {"keyboard": keyboard, "one_time_keyboard": True}
+    return json.dumps(reply_markup)
 
 
 def process_updates(updates):
@@ -55,7 +63,8 @@ def process_updates(updates):
             # fire off the workout function if the user has requested a workout...
             if text.lower() == 'workout':
                 print("User requested a workout")
-                workout(chat)
+                send_message("Test keyboard time", chat, build_keyboard(['Item 1', 'Item 2']))
+                #workout(chat)
         except Exception as e:
             print(e)
 

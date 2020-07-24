@@ -1,5 +1,6 @@
 from datetime import date
 from gspread.exceptions import CellNotFound
+import gspread
 
 
 def find_or_create_col(sheet, search_string):
@@ -14,7 +15,11 @@ def find_or_create_col(sheet, search_string):
     return int(col_num)
 
 
-def upload_workout(sheet, workout, points):
+def upload_workout(workout, points):
+    gc = gspread.oauth()
+    spreadsheet = gc.open('Workout Generator')
+    sheet = spreadsheet.worksheet('workouts')
+
     # Get max row for sheet + 1
     row = len(sheet.col_values(1)) + 1
     today = date.today().strftime('%d/%m/%Y')
